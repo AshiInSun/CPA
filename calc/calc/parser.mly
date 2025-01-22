@@ -2,7 +2,7 @@
 open Ast
 %}
 
-%token MUL, PLUS, MINUS, PRINT, LPAREN, RPAREN, EOL
+%token MUL, PLUS, MINUS, PRINT, LPAREN, RPAREN, EOL, END
 %token<int> INTEGER
 %start calc
 %left PLUS MINUS
@@ -16,13 +16,16 @@ open Ast
 
 %%
 
-calc : instruction_list EOL { $1 }
+calc : instruction_list END { $1 }
 
 instruction_list : instruction { [$1] }
-                     | instruction_list instruction { $2 :: $1 }
+                 | instruction_list instruction { $2 :: $1 }
+                 | instruction_list EOL instruction { $3 :: $1 }
 
-instruction : PRINT expr { Print($2) } ;
+instruction : PRINT expr { Print($2) } 
 
+expr_list : expr { [$1] }
+          | expr_list expr { $2 :: $1 }
 
 expr : expr PLUS expr { Add($1, $3) }
      | expr MINUS expr { Sub($1, $3) }

@@ -16,3 +16,4 @@ rule token = parse
   | "print"       { PRINT }
   | integer as x  { INTEGER(int_of_string x) }
   | eol           { EOL }
+  | "end\n"         { END }
