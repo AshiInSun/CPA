@@ -2,9 +2,11 @@
 open Ast
 %}
 
-%token MUL, PLUS, MINUS, PRINT, LPAREN, RPAREN, EOL, END
+%token MUL, PLUS, MINUS, PRINT, EQ, LPAREN, RPAREN, EOL, END, LET, VAR
 %token<int> INTEGER
+%token<string> VAR
 %start calc
+%left EQ
 %left PLUS MINUS
 %left MUL
 %type <Ast.instruction list> calc
@@ -15,17 +17,17 @@ open Ast
 %type <Ast.instruction> instruction
 
 %%
-
 calc : instruction_list END { $1 }
+     | instruction_list eols END { $1 }
 
-instruction_list : instruction { [$1] }
-                 | instruction_list instruction { $2 :: $1 }
-                 | instruction_list EOL instruction { $3 :: $1 }
+instruction_list : instruction { [$1] } 
+                 | instruction_list eols instruction { $3 :: $1 }
 
 instruction : PRINT expr { Print($2) } 
+          | LET VAR EQ expr { Let($2, $4) }
 
-expr_list : expr { [$1] }
-          | expr_list expr { $2 :: $1 }
+eols : EOL {}
+     | eols EOL {}
 
 expr : expr PLUS expr { Add($1, $3) }
      | expr MINUS expr { Sub($1, $3) }

@@ -1,5 +1,7 @@
 open Ast
 
+let var_env = Hashtbl.create 10
+
 let rec eval e =
   match e with
   | Add(left, right) -> eval left + eval right
@@ -13,6 +15,10 @@ and eval_instr e =
   print_int result;
   print_newline();
   result
+  | Let(x, e) -> let result = eval e in
+  Hashtbl.add var_env x result;
+  result
+
 
 and eval_instr_list el =
   match el with

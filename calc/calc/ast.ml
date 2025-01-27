@@ -6,5 +6,4 @@ type expr =
 
 type instruction =
   | Print of expr
-
-type instruction_list = instruction list
+  | Let of string * expr
