@@ -18,20 +18,21 @@ open Ast
 
 %%
 calc : instruction_list END { $1 }
-     | instruction_list eols END { $1 }
 
-instruction_list : instruction { [$1] } 
-                 | instruction_list eols instruction { $3 :: $1 }
-
+instruction_list : instruction eols instruction_list { $1 :: $3 }
+                 | instruction { [$1] } 
 instruction : PRINT expr { Print($2) } 
           | LET VAR EQ expr { Let($2, $4) }
+          | VAR EQ expr { Affect($1, $3) }
 
 eols : EOL {}
      | eols EOL {}
 
 expr : expr PLUS expr { Add($1, $3) }
      | expr MINUS expr { Sub($1, $3) }
+     | VAR { Var($1) }
      | term  { $1 };
+
 
 term : term MUL term { Mul($1, $3) }
      | factor  { $1 } ;

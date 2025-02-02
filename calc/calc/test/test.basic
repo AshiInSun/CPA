@@ -1,6 +1,4 @@
-print 1+1
-print 24-2
-
-
-
-print 27
+let a = 2
+let b = 6
+a = a + b 
+print a 

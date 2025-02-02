@@ -8,15 +8,24 @@ let rec eval e =
   | Sub(left, right) -> eval left - eval right
   | Mul(left, right) -> eval left * eval right
   | Integer(x) -> x
+  | Var(x) ->
+    try Hashtbl.find var_env x
+    with Not_found -> failwith ("Variable non définie : " ^ x)
+
+
 
 and eval_instr e =
   match e with
+  | Let(x, e) -> let result = eval e in
+  Hashtbl.add var_env x result;
+  result
   | Print(x) -> let result = eval x in
   print_int result;
   print_newline();
   result
-  | Let(x, e) -> let result = eval e in
-  Hashtbl.add var_env x result;
+
+  | Affect(x, e) -> let result = eval e in
+  Hashtbl.replace var_env x result;
   result
 
 
